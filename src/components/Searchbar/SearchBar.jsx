@@ -1,53 +1,57 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import Notiflix from 'notiflix';
-import { BsSearch} from 'react-icons/bs';
-import { ButtonLabel, Input, SearchForm, SearchFormButton, SearchbarForm } from './Searchbar.styled';
+import { BsSearch } from 'react-icons/bs';
+import {
+  ButtonLabel,
+  Input,
+  SearchForm,
+  SearchFormButton,
+  SearchbarForm,
+} from './Searchbar.styled';
 
-export class Searchbar extends Component {
-  state = { qwery: '' };
+export const Searchbar = ({ submit }) => {
+  const [qwery, setQwery] = useState('');
 
-  handleChangeInput = evt => {
-    this.setState({ qwery: evt.target.value.toLowerCase() });
+  const handleChangeInput = evt => {
+    setQwery(evt.target.value.toLowerCase());
   };
 
-  handleSubmit = evt => {
+  const handleSubmit = evt => {
     evt.preventDefault();
-    if (this.state.qwery.trim() === '') {
+    if (qwery.trim() === '') {
       Notiflix.Notify.failure('Enter your query');
       return;
     }
-    this.props.submit({ qwery: this.state.qwery });
-    this.resetForm();
+    submit(qwery);
+    onReset();
+  };
+  const onReset = () => {
+    setQwery('');
   };
 
-  resetForm() {
-    this.setState({ qwery: '' });
-  }
+  return (
+    <>
+      <SearchbarForm className="searchbar">
+        <SearchForm
+          className="form"
+          onSubmit={handleSubmit}
+          onChange={handleChangeInput}
+        >
+          <SearchFormButton type="submit" className="button">
+            <BsSearch size="2rem" color="black" />
+            <ButtonLabel className="button-label">Search</ButtonLabel>
+          </SearchFormButton>
 
-  render() {
-    return (
-      <>
-        <SearchbarForm className="searchbar">
-          <SearchForm
-            className="form"
-            onSubmit={this.handleSubmit}
-            onChange={this.handleChangeInput}
-          >
-            <SearchFormButton type="submit" className="button"> <BsSearch size="2rem" color="black"/>
-              <ButtonLabel className="button-label">Search</ButtonLabel>
-            </SearchFormButton>
-
-            <Input
-              className="input"
-              type="text"
-              value={this.state.qwery}
-              autoComplete="off"
-              autoFocus
-              placeholder="Search images and photos"
-            />
-          </SearchForm>
-        </SearchbarForm>
-      </>
-    );
-  }
-}
+          <Input
+            className="input"
+            type="text"
+            value={qwery}
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+          />
+        </SearchForm>
+      </SearchbarForm>
+    </>
+  );
+};

@@ -32,7 +32,7 @@ export const App = () => {
           );
           return;
         }
-        setImages([...images, ...hits]);
+        setImages(prevState => [...prevState, ...hits]);
         setShowBtn(page < totalHits / 12);
       } catch (error) {
         console.log(error);
@@ -41,11 +41,14 @@ export const App = () => {
       }
     };
     fetch();
-  }, [qwery, page]);
+  }, [qwery, page, perPage]);
 
-  const handleSubmitForm = qwery => {
-    console.log(qwery);
-    setQwery(qwery);
+  const handleSubmitForm = newQwery => {
+    if (qwery === newQwery) {
+      Notify.failure('We find it already, change search query');
+      return;
+    }
+    setQwery(newQwery);
     setPage(1);
     setImages([]);
     setShowBtn(false);
